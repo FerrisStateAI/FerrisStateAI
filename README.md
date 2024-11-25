@@ -1,4 +1,13 @@
-## Hi there 👋
+# 🎓 Ferris State University A.I. Program GitHub Repo
+
+some text to describe the purpose
+
+
+
+
+
+
+
 
 <!--
 **FerrisStateAI/FerrisStateAI** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
