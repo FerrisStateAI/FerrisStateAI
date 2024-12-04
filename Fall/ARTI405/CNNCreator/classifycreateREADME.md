@@ -1,4 +1,17 @@
-## Read Me and Install
+# CNN Creator and Classifier
+
+## **Details**
+- **Author**: Thomas Fairfield
+- **Course**: ARTI 405: A.I. Architecture & Design
+- **Instructor**: Professor Gogolin
+- **Semester**: Fall 2024
+
+## **Additional Details**
+- **Project Objective**: Produce a streamlit web interface for creating Convolutional Neural Nets and using them to classify
+- **Technologies**: Python
+- **Libraries**: streamlit, tensorflow+cuda, numpy, matplotlib, pillow
+
+## Installation and details
 
 Windows terminal:
 
