@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Quality Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <!-- 3js CDN from npm. Version 17-->
+    <script type="importmap">
+        {
+            "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Left panel for controls -->
+        <div class="control-panel">
+            <div class="header">
+                <h1>Wine Quality Predictor</h1>
+                <p class="subtitle">Adjust the parameters to predict wine quality</p>
+            </div>
+            
+            <form class="controls" onsubmit="event.preventDefault(); submitData();">
+                <div class="slider-group">
+                    <label for="volatile_acidity">
+                        <i class="fas fa-flask"></i> Volatile Acidity
+                        <span class="value" id="vaValue">1.0</span>
+                    </label>
+                    <input type="range" id="volatile_acidity" min="0.12" max="1.58" step="0.01" value="1.0"
+                           oninput="updateValue('vaValue', this.value)">
+                    <div class="range-labels">
+                        <span>0.12</span>
+                        <span>1.58</span>
+                    </div>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="sulphates">
+                        <i class="fas fa-vial"></i> Sulphates
+                        <span class="value" id="sulValue">1.0</span>
+                    </label>
+                    <input type="range" id="sulphates" min="0.33" max="2.0" step="0.01" value="1.0"
+                           oninput="updateValue('sulValue', this.value)">
+                    <div class="range-labels">
+                        <span>0.33</span>
+                        <span>2.0</span>
+                    </div>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="alcohol">
+                        <i class="fas fa-wine-bottle"></i> Alcohol
+                        <span class="value" id="alcValue">10.0</span>
+                    </label>
+                    <input type="range" id="alcohol" min="8.4" max="14.9" step="0.1" value="10.0"
+                           oninput="updateValue('alcValue', this.value)">
+                    <div class="range-labels">
+                        <span>8.4%</span>
+                        <span>14.9%</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="predict-button">
+                    <i class="fas fa-magic"></i> Predict Quality
+                </button>
+            </form>
+
+            <div id="result" class="prediction-result"></div>
+        </div>
+
+        <!-- Right panel for 3D visualization -->
+        <div class="visualization-panel" id="threejs-container">
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+    <script src="{{ url_for('static', path='/wineModel.js') }}", type="module"></script>
+</body>
+</html>
