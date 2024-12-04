@@ -1,1 +1,0 @@
-Create projects in this directory.  To do so, "add file" and use backslash / to specify a direct name, then make a readme.  You can upload your files in that directory.  You may have to fork the repository to do this
