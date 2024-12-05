@@ -1,0 +1,87 @@
+import gradio as gr
+import joblib
+import numpy as np
+
+# Load your trained voting classifier model
+model = joblib.load('voting_classifier_model.joblib')
+
+# Load the scalers for numerical columns
+scaler_age = joblib.load('scaler_age.joblib')
+scaler_restingbp = joblib.load('scaler_restingbp.joblib')
+scaler_cholesterol = joblib.load('scaler_cholesterol.joblib')
+scaler_maxhr = joblib.load('scaler_maxhr.joblib')
+scaler_oldpeak = joblib.load('scaler_oldpeak.joblib')
+
+def normalize_input(input_data):
+    """
+    Normalize numerical features and encode categorical features from input_data.
+    """
+    # Separate numerical and categorical features
+    numerical_features = input_data[:5]  # First 5 features are numerical (Age, RestingBP, Cholesterol, MaxHR, Oldpeak)
+    categorical_features = input_data[5:]  # Remaining features are categorical (FastingBS, Sex, Chest Pain, ECG, Exercise Angina, ST Slope)
+
+    # Normalize numerical features using the same scalers used during training
+    numerical_features = np.array(numerical_features).reshape(1, -1)
+    normalized_numerical_features = np.concatenate([
+        scaler_age.transform(numerical_features[:, 0:1]),
+        scaler_restingbp.transform(numerical_features[:, 1:2]),
+        scaler_cholesterol.transform(numerical_features[:, 2:3]),
+        scaler_maxhr.transform(numerical_features[:, 3:4]),
+        scaler_oldpeak.transform(numerical_features[:, 4:5])
+    ], axis=1)
+
+    # Map categorical features manually to integers
+    sex_map = {'M': 1, 'F': 0}
+    chest_pain_map = {'ASY': 0, 'NAP': 2, 'ATA': 1, 'TA': 3}
+    ecg_map = {'Normal': 1, 'LVH': 0, 'ST': 2}
+    exercise_angina_map = {'N': 0, 'Y': 1}
+    st_slope_map = {'Flat': 1, 'Up': 2, 'Down': 0}
+
+    # Use the maps to convert input values to the required format
+    fastingbs = categorical_features[0]  # FastingBS is already binary, use directly
+    sex = sex_map[categorical_features[1]]
+    chest_pain = chest_pain_map[categorical_features[2]]
+    ecg = ecg_map[categorical_features[3]]
+    exercise_angina = exercise_angina_map[categorical_features[4]]
+    st_slope = st_slope_map[categorical_features[5]]
+
+    # Combine normalized numerical features and mapped categorical features
+    return np.concatenate([
+        normalized_numerical_features.flatten(), 
+        [fastingbs, sex, chest_pain, ecg, exercise_angina, st_slope]
+    ])
+
+def predict_heart_failure(age, restingbp, cholesterol, maxhr, oldpeak, fastingbs, sex, chest_pain, ecg, exercise_angina, st_slope):
+    """
+    Predict the likelihood of heart failure using the input features.
+    """
+    # Prepare input data for prediction
+    input_data = [age, restingbp, cholesterol, maxhr, oldpeak, fastingbs, sex, chest_pain, ecg, exercise_angina, st_slope]
+    normalized_data = normalize_input(input_data)
+
+    # Predict using the voting classifier model
+    prediction = model.predict(normalized_data.reshape(1, -1))
+
+    # Return result
+    return "Heart Failure" if prediction[0] == 1 else "No Heart Failure"
+
+# Create the Gradio interface
+iface = gr.Interface(
+    fn=predict_heart_failure,
+    inputs=[
+        gr.Number(label="Age"),
+        gr.Number(label="RestingBP"),
+        gr.Number(label="Cholesterol"),
+        gr.Number(label="MaxHR"),
+        gr.Number(label="Oldpeak"),
+        gr.Dropdown(choices=[0, 1], label="Fasting Blood Sugar (0: ≤120, 1: >120)"),
+        gr.Dropdown(choices=["M", "F"], label="Sex"),
+        gr.Dropdown(choices=["ASY", "NAP", "ATA", "TA"], label="Chest Pain Type"),
+        gr.Dropdown(choices=["Normal", "LVH", "ST"], label="Resting ECG"),
+        gr.Dropdown(choices=["N", "Y"], label="Exercise Angina"),
+        gr.Dropdown(choices=["Flat", "Up", "Down"], label="ST Slope")
+    ],
+    outputs="text",
+)
+
+iface.launch()
