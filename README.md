@@ -1,6 +1,7 @@
 # 🎓 Ferris State University A.I. Program GitHub Repo
 
-some text to describe the purpose
+To add a new semester or class, do new file and use slashes / in the title to make a new folder, then make a readmeCLASS.md to create the folder
+So to add Spring: new file, Spring/ARTI972/readmeARTI972.md and then some meta details
 
 
 
