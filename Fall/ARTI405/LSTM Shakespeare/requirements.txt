@@ -1,0 +1,8 @@
+numpy
+tensorflow
+joblib
+uvicorn
+fastapi
+jinja2
+requests
+python-multipart
