@@ -1,1 +1,2 @@
-
+Donaload the models directly fromt the prediction file
+In bash run steamlit run server.py
