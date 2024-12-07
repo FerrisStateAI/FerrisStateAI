@@ -1,2 +1,3 @@
 Donaload the models directly fromt the prediction file
-In bash run steamlit run server.py
+The 'server.py' is the deployment file
+In bash run 'steamlit run server.py'
